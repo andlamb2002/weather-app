@@ -23,15 +23,52 @@ app.get('/api/weather', async (req, res) => {
     }
   });
 
-  app.get('/api/forecast', async (req, res) => {
+app.get('/api/forecast', async (req, res) => {
     try {
       const response = await axios.get(forecastUrl);
-      res.send(response.data);
+      const detailedForecast = response.data.list; 
+  
+      let dailyForecasts = {}; 
+  
+      detailedForecast.forEach(forecast => {
+        const date = new Date(forecast.dt * 1000).toISOString().split('T')[0]; 
+        if (!dailyForecasts[date]) {
+          dailyForecasts[date] = {
+            highTemp: forecast.main.temp_max,
+            lowTemp: forecast.main.temp_min,
+            hasPrecipitation: false
+          };
+        } else {
+          if (forecast.main.temp_max > dailyForecasts[date].highTemp) {
+            dailyForecasts[date].highTemp = forecast.main.temp_max;
+          }
+          if (forecast.main.temp_min < dailyForecasts[date].lowTemp) {
+            dailyForecasts[date].lowTemp = forecast.main.temp_min;
+          }
+        }
+
+        if ((forecast.rain && forecast.rain['3h'] > 0) || (forecast.snow && forecast.snow['3h'] > 0)) {
+          dailyForecasts[date].hasPrecipitation = true;
+        }
+      });
+  
+      const combinedForecast = {
+        detailedForecast: detailedForecast,
+        dailyForecasts: dailyForecasts
+      };
+  
+      res.send(combinedForecast);
     } catch (error) {
       console.error('Error fetching the weather data:', error);
       res.status(500).send(`Server error: ${error.message}`);
     }
-  });
+});
+
+function convertToEST(unixTimestamp) {
+return moment.unix(unixTimestamp)
+                .tz('America/New_York')
+                .format('YYYY-MM-DD HH:mm:ss');
+}
 
 app.listen(5000, () => {
     console.log('Server is running on http://localhost:5000');
