@@ -55,24 +55,17 @@ function App() {
   }
   , []);
 
-  function adjustForecastDateForComparison(forecastDt, offsetHours = -5) {
-    const forecastDateUTC = new Date(forecastDt * 1000);
-    const adjustedDate = new Date(forecastDateUTC.getTime() + offsetHours * 60 * 60 * 1000);
-    return adjustedDate.toISOString().split('T')[0];
-  }
-
   const renderForecast = (data) => (
       <div>
         {Object.entries(data.dailyForecasts).map(([date, dailyInfo], index) => (
           <div key={index}>
-            <h3>Daily Forecast for {adjustForecastDateForComparison(new Date(date).getTime() / 1000)}</h3>
+            <h3>Daily Forecast for {date}</h3>
             <p>High: {dailyInfo.highTemp}°C, Low: {dailyInfo.lowTemp}°C, Precipitation: {dailyInfo.hasPrecipitation ? 'Yes' : 'No'}</p>
             <ul>
               {data.detailedForecast
                 .filter(forecast => {
-                  const adjustedDate = adjustForecastDateForComparison(new Date(date).getTime() / 1000);
-                  const adjustedForecastDate = adjustForecastDateForComparison(forecast.dt);
-                  return adjustedForecastDate === adjustedDate;
+                  const forecastDate = forecast.dt_txt.split(' ')[0];
+                  return forecastDate === date;
                 })
                 .map((forecast, index) => (
                   <li key={index}>
