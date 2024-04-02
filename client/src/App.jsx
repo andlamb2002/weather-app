@@ -7,10 +7,27 @@ function App() {
 
   const [forecastData, setForecastData] = useState(null);
 
+  const city = "Charlotte";
+
+  // useEffect(() => {
+  //   const fetchWeather = async () => {
+  //     try {
+  //       const response = await fetch('/api/weather');
+  //       const data = await response.json();
+  //       setWeatherData(data);
+  //       setRetrievalDate(new Date().toLocaleString());
+  //     } catch (error) {
+  //       console.error("Error fetching weather data:", error);
+  //     }
+  //   };
+
+  //   fetchWeather();
+  // }, []);
+
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const response = await fetch('/api/weather');
+        const response = await fetch(`/api/weather?location=${city}`);
         const data = await response.json();
         setWeatherData(data);
         setRetrievalDate(new Date().toLocaleString());
@@ -18,9 +35,9 @@ function App() {
         console.error("Error fetching weather data:", error);
       }
     };
-
+  
     fetchWeather();
-  }, []);
+  }, []); 
 
   const renderWeather = (data) => (
     <div>
@@ -43,7 +60,7 @@ function App() {
   useEffect(() => {
     const fetchForecast = async () => {
       try {
-        const response = await fetch('/api/forecast');
+        const response = await fetch(`/api/forecast?location=${city}`);
         const data = await response.json();
         setForecastData(data);
       } catch (error) {

@@ -7,24 +7,58 @@ require('dotenv').config();
 const apiKey = process.env.WEATHER_API_KEY;
 
 const city = "Charlotte";
-const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+const zip = "28215";
+// const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}&units=metric`
 const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
 
-app.get('/api', (req, res) => {
-    res.send({"message": apiKey});
-});
+// app.get('/api', (req, res) => {
+//     res.send({"message": apiKey});
+// });
+
+// app.get('/api/weather', async (req, res) => {
+//     try {
+//       const response = await axios.get(weatherUrl);
+//       res.send(response.data);
+//     } catch (error) {
+//       console.error('Error fetching the weather data:', error);
+//       res.status(500).send(`Server error: ${error.message}`);
+//     }
+//   });
 
 app.get('/api/weather', async (req, res) => {
-    try {
-      const response = await axios.get(weatherUrl);
+  const { location } = req.query;
+
+  let baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
+  let requestUrl;
+
+  if (/^\d+$/.test(location)) {
+      requestUrl = `${baseUrl}?zip=${location},US&appid=${apiKey}&units=imperial`;
+  } else {
+      requestUrl = `${baseUrl}?q=${location}&appid=${apiKey}&units=imperial`;
+  }
+
+  try {
+      const response = await axios.get(requestUrl);
       res.send(response.data);
-    } catch (error) {
+  } catch (error) {
       console.error('Error fetching the weather data:', error);
       res.status(500).send(`Server error: ${error.message}`);
-    }
-  });
+  }
+});
 
 app.get('/api/forecast', async (req, res) => {
+  const { location } = req.query;
+
+  let baseUrl = 'https://api.openweathermap.org/data/2.5/forecast';
+  let requestUrl;
+
+  if (/^\d+$/.test(location)) {
+      requestUrl = `${baseUrl}?zip=${location},US&appid=${apiKey}&units=imperial`;
+  } else {
+      requestUrl = `${baseUrl}?q=${location}&appid=${apiKey}&units=imperial`;
+  }
+
   try {
     const response = await axios.get(forecastUrl);
     const detailedForecast = response.data.list.map(forecast => {
