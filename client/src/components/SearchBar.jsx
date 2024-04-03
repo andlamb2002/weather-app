@@ -44,7 +44,7 @@ function SearchBar() {
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Search for cities"
+        placeholder="Search"
       />
       {suggestions.length > 0 && (
         <ul className="absolute z-10 overflow-auto w-full text-text text-4xl bg-white border-x-2 border-b-2 border-black rounded-b">
