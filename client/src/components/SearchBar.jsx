@@ -38,6 +38,7 @@ function SearchBar() {
   return (
     <div>
       <input
+        // className="border-4 border-black rounded p-2"
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
