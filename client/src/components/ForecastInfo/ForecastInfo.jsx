@@ -7,7 +7,7 @@ function ForecastInfo(props) {
           {Object.entries(data.dailyForecasts).map(([date, dailyInfo], index) => (
             <div key={index}>
               <h3>Daily Forecast for {date}</h3>
-              <p>High: {dailyInfo.highTemp}°C, Low: {dailyInfo.lowTemp}°C, Precipitation: {dailyInfo.hasPrecipitation ? 'Yes' : 'No'}</p>
+              <p>High: {dailyInfo.highTemp}°F, Low: {dailyInfo.lowTemp}°F, Precipitation: {dailyInfo.hasPrecipitation ? 'Yes' : 'No'}</p>
               <ul>
                 {data.detailedForecast
                   .filter(forecast => {
@@ -18,7 +18,7 @@ function ForecastInfo(props) {
                     <li key={index}>
                       Time: {new Date(forecast.dt * 1000).toLocaleTimeString()}
                       <ul>
-                        <li>Temperature: {forecast.main.temp}°C</li>
+                        <li>Temperature: {forecast.main.temp}°F</li>
                         <li>Description: {forecast.weather[0].description}</li>
                       </ul>
                     </li>

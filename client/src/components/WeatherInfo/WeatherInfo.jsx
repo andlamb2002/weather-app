@@ -5,9 +5,9 @@ function WeatherInfo(props) {
     const renderWeather = (data, retrievalDate) => (
         <div>
           <h1>Today's Weather in {data.name}</h1>
-          <p><strong>Temperature:</strong> {data.main.temp}°C (feels like {data.main.feels_like}°C)</p>
-          {/* <p><strong>Minimum Temperature:</strong> {data.main.temp_min}°C</p>
-          <p><strong>Maximum Temperature:</strong> {data.main.temp_max}°C</p> */}
+          <p><strong>Temperature:</strong> {data.main.temp}°F (feels like {data.main.feels_like}°F)</p>
+          {/* <p><strong>Minimum Temperature:</strong> {data.main.temp_min}°F</p>
+          <p><strong>Maximum Temperature:</strong> {data.main.temp_max}°F</p> */}
           <p><strong>Conditions:</strong> {data.weather[0].description}</p>
           {data.weather[0].icon && (
             <img src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`} alt="Weather Icon" />
