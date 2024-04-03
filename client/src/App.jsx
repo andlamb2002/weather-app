@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+import SearchBar from './SearchBar/SearchBar';
 
 function App() {
 
@@ -12,7 +14,7 @@ function App() {
   // useEffect(() => {
   //   const fetchWeather = async () => {
   //     try {
-  //       const response = await fetch('/api/weather');
+  //       const response = await fetch(`/api/weather?location=${city}`);
   //       const data = await response.json();
   //       setWeatherData(data);
   //       setRetrievalDate(new Date().toLocaleString());
@@ -20,16 +22,15 @@ function App() {
   //       console.error("Error fetching weather data:", error);
   //     }
   //   };
-
+  
   //   fetchWeather();
-  // }, []);
+  // }, []); 
 
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const response = await fetch(`/api/weather?location=${city}`);
-        const data = await response.json();
-        setWeatherData(data);
+        const response = await axios.get(`/api/weather?location=${city}`);
+        setWeatherData(response.data);
         setRetrievalDate(new Date().toLocaleString());
       } catch (error) {
         console.error("Error fetching weather data:", error);
@@ -37,10 +38,11 @@ function App() {
     };
   
     fetchWeather();
-  }, []); 
+  }, []);
 
   const renderWeather = (data) => (
     <div>
+      <SearchBar></SearchBar>
       <h1>Today's Weather in {data.name}</h1>
       <p><strong>Temperature:</strong> {data.main.temp}°C (feels like {data.main.feels_like}°C)</p>
       {/* <p><strong>Minimum Temperature:</strong> {data.main.temp_min}°C</p>
@@ -57,20 +59,33 @@ function App() {
     </div>
   );
 
+  // useEffect(() => {
+  //   const fetchForecast = async () => {
+  //     try {
+  //       const response = await fetch(`/api/forecast?location=${city}`);
+  //       const data = await response.json();
+  //       setForecastData(data);
+  //     } catch (error) {
+  //       console.error("Error fetching forecast data:", error);
+  //     }
+  //   };
+
+  //   fetchForecast();
+  // }
+  // , []);
+
   useEffect(() => {
     const fetchForecast = async () => {
       try {
-        const response = await fetch(`/api/forecast?location=${city}`);
-        const data = await response.json();
-        setForecastData(data);
+        const response = await axios.get(`/api/forecast?location=${city}`);
+        setForecastData(response.data);
       } catch (error) {
         console.error("Error fetching forecast data:", error);
       }
     };
 
     fetchForecast();
-  }
-  , []);
+  }, []);
 
   const renderForecast = (data) => (
       <div>

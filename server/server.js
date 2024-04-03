@@ -4,27 +4,12 @@ const axios = require('axios');
 const moment = require('moment-timezone');
 require('dotenv').config();
 
-const apiKey = process.env.WEATHER_API_KEY;
+const weatherApiKey = process.env.WEATHER_API_KEY;
+const placesApiKey = process.env.PLACES_API_KEY;
 
-const city = "Charlotte";
-const zip = "28215";
-// const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}&units=metric`
-const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
-
-// app.get('/api', (req, res) => {
-//     res.send({"message": apiKey});
-// });
-
-// app.get('/api/weather', async (req, res) => {
-//     try {
-//       const response = await axios.get(weatherUrl);
-//       res.send(response.data);
-//     } catch (error) {
-//       console.error('Error fetching the weather data:', error);
-//       res.status(500).send(`Server error: ${error.message}`);
-//     }
-//   });
+app.get('/api', (req, res) => {
+    res.send({"message": "Hello world!"});
+});
 
 app.get('/api/weather', async (req, res) => {
   const { location } = req.query;
@@ -33,9 +18,9 @@ app.get('/api/weather', async (req, res) => {
   let requestUrl;
 
   if (/^\d+$/.test(location)) {
-      requestUrl = `${baseUrl}?zip=${location},US&appid=${apiKey}&units=imperial`;
+      requestUrl = `${baseUrl}?zip=${location},US&appid=${weatherApiKey}&units=imperial`;
   } else {
-      requestUrl = `${baseUrl}?q=${location}&appid=${apiKey}&units=imperial`;
+      requestUrl = `${baseUrl}?q=${location}&appid=${weatherApiKey}&units=imperial`;
   }
 
   try {
@@ -54,13 +39,13 @@ app.get('/api/forecast', async (req, res) => {
   let requestUrl;
 
   if (/^\d+$/.test(location)) {
-      requestUrl = `${baseUrl}?zip=${location},US&appid=${apiKey}&units=imperial`;
+      requestUrl = `${baseUrl}?zip=${location},US&appid=${weatherApiKey}&units=imperial`;
   } else {
-      requestUrl = `${baseUrl}?q=${location}&appid=${apiKey}&units=imperial`;
+      requestUrl = `${baseUrl}?q=${location}&appid=${weatherApiKey}&units=imperial`;
   }
 
   try {
-    const response = await axios.get(forecastUrl);
+    const response = await axios.get(requestUrl);
     const detailedForecast = response.data.list.map(forecast => {
       
       const dateTimeEST = moment.unix(forecast.dt).tz('America/New_York').format('YYYY-MM-DD HH:mm:ss');
@@ -102,6 +87,20 @@ app.get('/api/forecast', async (req, res) => {
     res.send(combinedForecast);
   } catch (error) {
     console.error('Error fetching the weather data:', error);
+    res.status(500).send(`Server error: ${error.message}`);
+  }
+});
+
+app.get('/api/places', async (req, res) => {
+  const { location } = req.query;
+
+  const requestUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${location}&types=(cities)&components=country:US&key=${placesApiKey}&maxRows=5`;
+
+  try {
+    const response = await axios.get(requestUrl);
+    res.send(response.data);
+  } catch (error) {
+    console.error('Error fetching the places data:', error);
     res.status(500).send(`Server error: ${error.message}`);
   }
 });
