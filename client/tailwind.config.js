@@ -11,7 +11,7 @@ module.exports = {
         header: '#3A91C4',
         darkBg: '#1A3F56',
         white: '#FFFFFF',
-        whiteHover: '#F7F7F7',
+        whiteHover: '#C2C2C2',
         black: "#000000",
         orange: '#FFCF99',
         orangeHover: '#FFB561', 

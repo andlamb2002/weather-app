@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import axios from 'axios';
-import SearchBar from './components/SearchBar';
-import WeatherInfo from './components/WeatherInfo';
-import ForecastInfo from './components/ForecastInfo';
+import './App.css';
+import Header from './Components/Header';
+import WeatherInfo from './Components/WeatherInfo';
+import ForecastInfo from './Components/ForecastInfo';
 
 function App() {
 
@@ -38,10 +39,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<SearchBar />} /> 
-        <Route path="/weather/:lat/:lng" element={<WeatherFetcher />} />
-      </Routes>
+      <Header></Header>
+      <div className="bg-bg">
+        <Routes>
+          <Route path="/" element={<div className="min-h-screen w-full"/>} /> 
+          <Route path="/weather/:lat/:lng" element={<WeatherFetcher/>} />
+        </Routes>
+      </div>
     </BrowserRouter>
   )
 }
