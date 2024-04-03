@@ -28,10 +28,10 @@ function SearchBar() {
 
   const handleSelectSuggestion = async (placeId) => {
     try {
-      const detailsResponse = await axios.get(`/api/weatherbycoordinates?placeId=${placeId}`);
-      navigate(`/weather/${detailsResponse.data.coord.lat}/${detailsResponse.data.coord.lon}`);
+      const { data } = await axios.get(`/api/coordinatesByPlaceId?placeId=${placeId}`);
+      navigate(`/weather/${data.lat}/${data.lng}`);
     } catch (error) {
-      console.error('Error fetching place details:', error);
+      console.error('Error fetching coordinates:', error);
     }
   };
 
