@@ -7,28 +7,27 @@ import ForecastInfo from './components/ForecastInfo';
 
 function App() {
 
-  const [weatherData, setWeatherData] = useState(null);
-  const [retrievalDate, setRetrievalDate] = useState('');
-
-  const [forecastData, setForecastData] = useState(null);
-
-  const fetchData = async (lat, lng) => {
-    try {
-      const weatherResponse = await axios.get(`/api/weatherByCoordinates?lat=${lat}&lng=${lng}`);
-      setWeatherData(weatherResponse.data.currentWeather);
-      setForecastData(weatherResponse.data.forecast);
-      setRetrievalDate(new Date().toLocaleString());
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   function WeatherFetcher() {
+    
+    const [weatherData, setWeatherData] = useState(null);
+    const [retrievalDate, setRetrievalDate] = useState('');
+    const [forecastData, setForecastData] = useState(null);
     const { lat, lng } = useParams();
+  
     useEffect(() => {
-      fetchData(lat, lng);
+      const fetchData = async () => {
+        try {
+          const weatherResponse = await axios.get(`/api/weatherByCoordinates?lat=${lat}&lng=${lng}`);
+          setWeatherData(weatherResponse.data.currentWeather);
+          setForecastData(weatherResponse.data.forecast);
+          setRetrievalDate(new Date().toLocaleString());
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
     }, [lat, lng]);
-
+  
     return (
       <>
         <WeatherInfo weatherData={weatherData} retrievalDate={retrievalDate}/>
