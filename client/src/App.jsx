@@ -8,7 +8,7 @@ import ForecastInfo from './components/ForecastInfo';
 function App() {
 
   function WeatherFetcher() {
-    
+
     const [weatherData, setWeatherData] = useState(null);
     const [retrievalDate, setRetrievalDate] = useState('');
     const [forecastData, setForecastData] = useState(null);
@@ -47,4 +47,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

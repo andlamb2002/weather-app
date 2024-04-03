@@ -11,34 +11,13 @@ app.get('/api', (req, res) => {
     res.send({"message": "Hello world!"});
 });
 
-// app.get('/api/weatherByCoordinates', async (req, res) => {
-//   const { placeId } = req.query;
-
-//   // Fetching place details from Google Places API to get coordinates
-//   const placesDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry&key=${placesApiKey}`;
-  
-//   try {
-//     const placeResponse = await axios.get(placesDetailsUrl);
-//     const coordinates = placeResponse.data.result.geometry.location;
-    
-//     // Using the coordinates to fetch weather from OpenWeatherMap
-//     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lng=${coordinates.lng}&appid=${weatherApiKey}&units=imperial`;
-
-//     const weatherResponse = await axios.get(weatherUrl);
-//     res.send(weatherResponse.data);
-//   } catch (error) {
-//     console.error('Error fetching weather data by coordinates:', error);
-//     res.status(500).send(`Server error: ${error.message}`);
-//   }
-// });
-
 app.get('/api/coordinatesByPlaceId', async (req, res) => {
   const { placeId } = req.query;
   const placesDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry&key=${placesApiKey}`;
   
   try {
     const placeResponse = await axios.get(placesDetailsUrl);
-    const coordinates = placeResponse.data.result.geometry.location; // { lat: ..., lng: ... }
+    const coordinates = placeResponse.data.result.geometry.location; 
     res.send(coordinates);
   } catch (error) {
     console.error('Error fetching coordinates:', error);
@@ -46,34 +25,18 @@ app.get('/api/coordinatesByPlaceId', async (req, res) => {
   }
 });
 
-// app.get('/api/weatherByCoordinates', async (req, res) => {
-//   const { lat, lng } = req.query;
-//   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lng=${lng}&appid=${weatherApiKey}&units=imperial`;
-
-//   try {
-//     const weatherResponse = await axios.get(weatherUrl);
-//     res.send(weatherResponse.data);
-//   } catch (error) {
-//     console.error('Error fetching weather data by coordinates:', error);
-//     res.status(500).send(`Server error: ${error.message}`);
-//   }
-// });
-
 app.get('/api/weatherByCoordinates', async (req, res) => {
   const { lat, lng } = req.query;
 
-  // URLs for weather and forecast data
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=imperial`;
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=imperial`;
 
   try {
-    // Fetching weather and forecast data concurrently
     const [weatherResponse, forecastResponse] = await Promise.all([
       axios.get(weatherUrl),
       axios.get(forecastUrl)
     ]);
 
-    // Processing the forecast data as before
     const detailedForecast = forecastResponse.data.list.map(forecast => {
       const dateTimeEST = moment.unix(forecast.dt).tz('America/New_York').format('YYYY-MM-DD HH:mm:ss');
       const adjustedForecast = { ...forecast, dt_txt: dateTimeEST };
@@ -83,7 +46,7 @@ app.get('/api/weatherByCoordinates', async (req, res) => {
     let dailyForecasts = {};
 
     detailedForecast.forEach(forecast => {
-      const dateEST = forecast.dt_txt.split(' ')[0]; // Using adjusted date
+      const dateEST = forecast.dt_txt.split(' ')[0];
 
       if (!dailyForecasts[dateEST]) {
         dailyForecasts[dateEST] = {
@@ -97,7 +60,6 @@ app.get('/api/weatherByCoordinates', async (req, res) => {
       }
     });
 
-    // Combining both weather and forecast data into one response object
     const combinedData = {
       currentWeather: weatherResponse.data,
       forecast: {
