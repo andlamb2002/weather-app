@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import axios from 'axios';
-import SearchBar from './components/SearchBar/SearchBar';
-import WeatherInfo from './components/WeatherInfo/WeatherInfo';
-import ForecastInfo from './components/ForecastInfo/ForecastInfo';
+import SearchBar from './components/SearchBar';
+import WeatherInfo from './components/WeatherInfo';
+import ForecastInfo from './components/ForecastInfo';
 
 function App() {
 
@@ -42,17 +43,21 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <WeatherInfo weatherData={weatherData} retrievalDate={retrievalDate}></WeatherInfo>
-      <ForecastInfo forecastData={forecastData}></ForecastInfo>
-    </div>
-    // <Router>
-    //   <Switch>
-    //     <Route path="/" exact component={SearchBar} />
-    //     <Route path="/weather/:city" exact component={WeatherInfo} />
-    //     <Route path="/forecast/:city" exact component={ForecastInfo} />
-    //   </Switch>
-    // </Router>
+
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SearchBar />} /> 
+        <Route 
+          path="/weather/:lat/:lon" 
+          element={
+          <>
+            <WeatherInfo weatherData={weatherData} retrievalDate={retrievalDate} />
+            <ForecastInfo forecastData={forecastData} />
+          </>
+        } 
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

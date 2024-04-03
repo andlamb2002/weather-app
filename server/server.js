@@ -11,6 +11,27 @@ app.get('/api', (req, res) => {
     res.send({"message": "Hello world!"});
 });
 
+app.get('/api/weatherbycoordinates', async (req, res) => {
+  const { placeId } = req.query;
+
+  // Fetching place details from Google Places API to get coordinates
+  const placesDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry&key=${placesApiKey}`;
+  
+  try {
+    const placeResponse = await axios.get(placesDetailsUrl);
+    const coordinates = placeResponse.data.result.geometry.location;
+    
+    // Using the coordinates to fetch weather from OpenWeatherMap
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lng}&appid=${weatherApiKey}&units=imperial`;
+
+    const weatherResponse = await axios.get(weatherUrl);
+    res.send(weatherResponse.data);
+  } catch (error) {
+    console.error('Error fetching weather data by coordinates:', error);
+    res.status(500).send(`Server error: ${error.message}`);
+  }
+});
+
 app.get('/api/weather', async (req, res) => {
   const { location } = req.query;
 
