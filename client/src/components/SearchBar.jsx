@@ -40,7 +40,7 @@ function SearchBar() {
   return (
     <div className="w-full relative">
       <input
-        className="w-full text-text text-4xl bg-white border-2 border-black rounded p-2 focus:outline-none "
+        className="w-full text-text text-4xl bg-white border-2 border-black rounded p-2 leading-normal focus:outline-none"
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}

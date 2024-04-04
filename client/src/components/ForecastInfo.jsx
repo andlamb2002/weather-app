@@ -1,39 +1,30 @@
-import React from 'react'
+import React from 'react';
+import Dropdown from './Dropdown';
 
 function ForecastInfo(props) {
-  
-    const renderForecast = (data) => (
-        <div>
-          {Object.entries(data.dailyForecasts).map(([date, dailyInfo], index) => (
-            <div key={index}>
-              <h3>Daily Forecast for {date}</h3>
-              <p>High: {dailyInfo.highTemp}°F, Low: {dailyInfo.lowTemp}°F, Precipitation: {dailyInfo.hasPrecipitation ? 'Yes' : 'No'}</p>
-              <ul>
-                {data.detailedForecast
-                  .filter(forecast => {
-                    const forecastDate = forecast.dt_txt.split(' ')[0];
-                    return forecastDate === date;
-                  })
-                  .map((forecast, index) => (
-                    <li key={index}>
-                      Time: {new Date(forecast.dt * 1000).toLocaleTimeString()}
-                      <ul>
-                        <li>Temperature: {forecast.main.temp}°F</li>
-                        <li>Description: {forecast.weather[0].description}</li>
-                      </ul>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      );
+  const renderForecast = (data) => {
+    return Object.entries(data.dailyForecasts).map(([date, dailyInfo], index) => {
+      const detailedForecast = data.detailedForecast.filter(forecast => {
+        const forecastDate = forecast.dt_txt.split(' ')[0];
+        return forecastDate === date;
+      });
 
-    return (
-        <div className="forecast-info">
-            {props.forecastData ? renderForecast(props.forecastData) : 'Loading Forecast...'}
-        </div>
-    );
+      return (
+        <Dropdown
+          key={index}
+          date={date}
+          highLow={{ high: dailyInfo.highTemp, low: dailyInfo.lowTemp }}
+          forecasts={detailedForecast}
+        />
+      );
+    });
+  };
+
+  return (
+    <div className="forecast-info">
+      {props.forecastData ? renderForecast(props.forecastData) : 'Loading Forecast...'}
+    </div>
+  );
 }
 
 export default ForecastInfo;
