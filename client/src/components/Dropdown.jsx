@@ -1,36 +1,53 @@
 import React, { useState } from 'react';
+import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 
 function Dropdown(props) { 
   const [isOpen, setIsOpen] = useState(false);
 
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-').map(num => parseInt(num, 10));
+    const date = new Date(year, month - 1, day);
+    const options = { month: 'numeric', day: 'numeric', year: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const formatTime = (timestamp) => {
+    return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   return (
-    <div className="mb-2">
+    <div className="mb-2 w-4/5 mx-auto text-text">
       <div
-        className="flex justify-between items-center bg-orange p-2 cursor-pointer"
+        className="flex justify-between items-center bg-orange rounded p-4 cursor-pointer hover:bg-orangeHover"
         onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className="text-lg font-bold">{props.date}</div>
-        <div>
-          <span className="font-bold">{props.highLow.high}°</span> / <span className="font-bold">{props.highLow.low}°</span>
-          {isOpen ? (
-            <span className="material-icons">expand_less</span>
-          ) : (
-            <span className="material-icons">expand_more</span>
-          )}
+        >
+        <div className="text-2xl">{formatDate(props.date)}</div>
+        <div className="flex items-center text-2xl">
+            <span>{Math.round(props.highLow.high)}°</span> / <span className="pr-2">{Math.round(props.highLow.low)}°</span>
+            {isOpen ? (
+            <MdExpandLess className="text-xl" />
+            ) : (
+            <MdExpandMore className="text-xl" />
+            )}
         </div>
       </div>
 
       {isOpen && (
-        <ul className="bg-orange-100 border border-t-0 border-orange-200">
+        <ul className="text-xl mx-auto w-11/12">
           {props.forecasts.map((forecast, index) => (
             <li
               key={index}
-              className="flex justify-between items-center p-2 border-b border-orange-200 last:border-b-0"
+              className="flex justify-between items-center p-2"
             >
-              <div>{new Date(forecast.dt * 1000).toLocaleTimeString()}</div>
-              <div className="flex items-center">
-                <img src={`http://openweathermap.org/img/wn/${forecast.weather[0].icon}.png`} alt="Weather icon" />
-                <span>{forecast.main.temp}°</span>
+              <div>{formatTime(forecast.dt)}</div>
+              <div className="flex items-center gap-2 capitalize">
+                <span>{forecast.weather[0].description}</span>
+                <img 
+                    src={`http://openweathermap.org/img/wn/${forecast.weather[0].icon}.png`} 
+                    alt="Weather icon" 
+                    className="bg-darkBg" 
+                />
+                <span>{Math.round(forecast.main.temp)}°</span>
               </div>
             </li>
           ))}
