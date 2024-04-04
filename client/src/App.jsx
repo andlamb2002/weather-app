@@ -21,7 +21,9 @@ function App() {
           const weatherResponse = await axios.get(`/api/weatherByCoordinates?lat=${lat}&lng=${lng}`);
           setWeatherData(weatherResponse.data.currentWeather);
           setForecastData(weatherResponse.data.forecast);
-          setRetrievalDate(new Date().toLocaleString());
+          const now = new Date();
+          const options = { hour: 'numeric', minute: 'numeric' };
+          setRetrievalDate(now.toLocaleTimeString([], options));
         } catch (error) {
           console.error("Error fetching data:", error);
         }

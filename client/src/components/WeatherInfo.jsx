@@ -3,22 +3,37 @@ import React from 'react'
 function WeatherInfo(props) {
 
     const renderWeather = (data, retrievalDate) => (
-        <div>
-          <h1>Today's Weather in {data.name}</h1>
-          <p><strong>Temperature:</strong> {data.main.temp}°F (feels like {data.main.feels_like}°F)</p>
-          {/* <p><strong>Minimum Temperature:</strong> {data.main.temp_min}°F</p>
-          <p><strong>Maximum Temperature:</strong> {data.main.temp_max}°F</p> */}
-          <p><strong>Conditions:</strong> {data.weather[0].description}</p>
-          {data.weather[0].icon && (
-            <img src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`} alt="Weather Icon" />
-          )}
-          <p><strong>Humidity:</strong> {data.main.humidity}%</p>
-          <p><strong>Pressure:</strong> {data.main.pressure} hPa</p>
-          {/* <p><strong>Visibility:</strong> {data.visibility / 1000} km</p> */}
-          <p><strong>Wind Speed:</strong> {data.wind.speed} m/s</p>
-          <p><strong>Date of Retrieval:</strong> {retrievalDate}</p>
+
+    
+      <div className="flex justify-center items-center py-4">
+        <div className="bg-darkBg rounded w-[640px] px-8 py-4 text-white">
+          <h1 className="text-4xl mb-4">Today's Weather in {data.name}</h1>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-9xl">{Math.round(data.main.temp)}°</p>
+              <p className="text-xl">Feels like {Math.round(data.main.feels_like)}°</p>
+              <div className="flex flex-col py-4 gap-3">
+                <p className="text-3xl">Humidity: {data.main.humidity}%</p>
+                <p className="text-3xl">Pressure: {data.main.pressure} hPa</p>
+                <p className="text-3xl">Wind: {data.wind.speed} m/s</p>
+              </div>
+            </div>
+            <div className="text-left flex flex-col">
+              <div className="flex-grow">
+                {data.weather[0].icon && (
+                  <img className="inline-block" src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`} alt="Weather Icon" />
+                )}
+                <p className="text-4xl capitalize">{data.weather[0].description}</p>
+              </div>
+              <div className="text-xl text-right">
+                <p>Retrieved {retrievalDate}</p>
+              </div>
+            </div>
+          </div>
         </div>
-      );
+      </div>
+
+    );
   
     return (
       <div>
