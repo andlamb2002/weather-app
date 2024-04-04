@@ -5,6 +5,7 @@ import './App.css';
 import Header from './Components/Header';
 import WeatherInfo from './Components/WeatherInfo';
 import ForecastInfo from './Components/ForecastInfo';
+import Directions from './Components/Directions';
 
 function App() {
 
@@ -45,8 +46,8 @@ function App() {
         <Header />
         <div className="flex-1 overflow-auto bg-bg">
           <Routes>
-            <Route path="/" element={<div className="h-full" />} />
-            <Route path="/weather/:lat/:lng" element={<WeatherFetcher />} />
+            <Route path="/" element={<Directions/>} />
+            <Route path="/weather/:lat/:lng" element={<WeatherFetcher/>} />
           </Routes>
         </div>
       </div>
